@@ -1,0 +1,22 @@
+Client_ID,Sector,Region,Transactions,Month,Year
+C001,Logistics,Dubai,120,Jan,2024
+C002,IT,Abu Dhabi,95,Jan,2024
+C003,Construction,Dubai,80,Jan,2024
+C004,Healthcare,Sharjah,70,Jan,2024
+C005,Finance,Dubai,60,Jan,2024
+C001,Logistics,Dubai,130,Feb,2024
+C002,IT,Abu Dhabi,100,Feb,2024
+C003,Construction,Dubai,85,Feb,2024
+C004,Healthcare,Sharjah,75,Feb,2024
+C005,Finance,Dubai,65,Feb,2024
+C001,Logistics,Dubai,140,Mar,2024
+C002,IT,Abu Dhabi,110,Mar,2024
+C003,Construction,Dubai,90,Mar,2024
+C004,Healthcare,Sharjah,80,Mar,2024
+C005,Finance,Dubai,70,Mar,2024
+C006,Logistics,Abu Dhabi,100,Jan,2024
+C007,IT,Dubai,85,Jan,2024
+C006,Logistics,Abu Dhabi,110,Feb,2024
+C007,IT,Dubai,90,Feb,2024
+C006,Logistics,Abu Dhabi,120,Mar,2024
+C007,IT,Dubai,100,Mar,2024
