@@ -1,0 +1,97 @@
+# 🔹 WPS Forecasting & Predictive Analysis – SQL Queries
+
+This page contains all SQL queries for analyzing WPS transactions, forecasting, and sector/region insights.
+
+---
+
+1️⃣ Total Transactions per Sector per Month
+
+```sql
+SELECT Sector, Month, SUM(Transactions) AS Total_Transactions
+FROM wps_forecasting
+GROUP BY Sector, Month
+ORDER BY Sector, FIELD(Month,'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec');
+
+-- This query shows total payroll transactions per sector each month.
+-- Observation: Use a line chart to visualize sector-wise trends over months.
+
+2️⃣ Month-over-Month Growth Rate per Sector
+
+SELECT a.Sector, a.Month, a.Total_Transactions,
+       ROUND(((a.Total_Transactions - b.Total_Transactions)*100.0)/b.Total_Transactions, 2) AS MoM_Growth_Percentage
+FROM
+    (SELECT Sector, Month, SUM(Transactions) AS Total_Transactions
+     FROM wps_forecasting
+     GROUP BY Sector, Month) a
+LEFT JOIN
+    (SELECT Sector, Month, SUM(Transactions) AS Total_Transactions
+     FROM wps_forecasting
+     GROUP BY Sector, Month) b
+ON a.Sector = b.Sector
+AND MONTH(STR_TO_DATE(a.Month,'%b')) = MONTH(STR_TO_DATE(b.Month,'%b')) + 1;
+
+-- Calculates month-over-month growth % for each sector.
+-- bservation: Overlay MoM % on line charts for sector trends.
+
+3️⃣ Forecast Next Month Transactions per Sector
+
+SELECT Sector,
+       MAX(Total_Transactions) + ROUND(((MAX(Total_Transactions) - MIN(Total_Transactions)) / (COUNT(Month)-1)),0) AS Forecast_Next_Month
+FROM wps_forecasting
+GROUP BY Sector;
+
+-- Estimates next month transactions using simple linear growth per sector.
+-- Observation: Display results in KPI cards for forecasted transactions.
+
+SELECT Region, Month, SUM(Transactions) AS Total_Transactions
+FROM wps_forecasting
+GROUP BY Region, Month
+ORDER BY Region, FIELD(Month,'Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec');
+
+-- Shows total transactions per region each month for trend analysis.
+-- Observation: Use line or stacked area charts to identify growth by region.
+
+5️⃣ Highlight High-Growth Sectors
+
+SELECT Sector, ROUND(AVG(MoM_Growth_Percentage),2) AS Avg_MoM_Growth
+FROM (
+    SELECT a.Sector, a.Month, a.Total_Transactions,
+           ((a.Total_Transactions - b.Total_Transactions)*100.0)/b.Total_Transactions AS MoM_Growth_Percentage
+    FROM
+        (SELECT Sector, Month, SUM(Transactions) AS Total_Transactions
+         FROM wps_forecasting
+         GROUP BY Sector, Month) a
+    LEFT JOIN
+        (SELECT Sector, Month, SUM(Transactions) AS Total_Transactions
+         FROM wps_forecasting
+         GROUP BY Sector, Month) b
+    ON a.Sector = b.Sector
+    AND MONTH(STR_TO_DATE(a.Month,'%b')) = MONTH(STR_TO_DATE(b.Month,'%b')) + 1
+) AS growth
+GROUP BY Sector
+ORDER BY Avg_MoM_Growth DESC;
+
+-- Identifies top sectors by average MoM growth %.
+-- Observation: Use a bar chart to highlight high-growth sectors.
+
+6️⃣ Total Transactions per Region
+
+SELECT Region, SUM(Transactions) AS Total_Transactions
+FROM wps_forecasting
+GROUP BY Region
+ORDER BY Total_Transactions DESC;
+
+-- Total transactions by region to find highest activity regions.
+-- Observation: Highlight regions with the highest payroll activity.
+
+7️⃣ Average Transactions per Client
+
+SELECT Client_ID, ROUND(AVG(Transactions),2) AS Avg_Transactions
+FROM wps_forecasting
+GROUP BY Client_ID
+ORDER BY Avg_Transactions DESC;
+
+-- Calculates average monthly transactions per client.
+-- Observation: Identify top clients by average payroll transactions.
+
+
